@@ -20,7 +20,7 @@ Turn whatever the user provides into one self-contained HTML lesson that a compl
 
 | Material | How to get the content |
 |---|---|
-| YouTube link or ID | `scripts/fetch_transcript.py` (below). If it fails, ask the user to paste the transcript. |
+| YouTube link or ID | `scripts/fetch_transcript.py` (below). A bot wall means cookies, not a different tool — see "When YouTube answers with a bot wall". If it still fails, ask the user to paste the transcript. |
 | PDF (article, paper, slides) | If its text is already in context, use it. Otherwise read the `pdf-reading` (or `file-reading`) skill and extract it from the uploads folder (Claude.ai: `/mnt/user-data/uploads/`). |
 | GitHub repo | `git clone --depth 1 <url> "$WORK_DIR/repo"`, then read the README, docs and main code files. |
 | Web article URL | `curl -sL -A "Mozilla/5.0" <url>` and strip tags; if blocked, ask for a PDF or paste. |
@@ -41,6 +41,20 @@ The transcript script also writes `<out>.meta.json` with the exact title, channe
 - jargon to explain
 - names auto-captions probably misspelled (correct them when confident)
 - claims or code that look wrong (you'll test them in step 3)
+
+#### When YouTube answers with a bot wall
+`Sign in to confirm you're not a bot` / `LOGIN_REQUIRED` / `RequestBlocked` is a **cookie problem**, not a wrong-tool problem: YouTube treats an anonymous request from a cloud IP exactly like an expired session. Cycle order is cookies first, player client second.
+
+1. Ask the user to export `cookies.txt` from a browser **logged in to youtube.com** (a "Get cookies.txt LOCALLY"-style extension) and hand it over as a file — never paste it into chat. Then:
+   ```bash
+   python3 "$SKILL_DIR/scripts/fetch_transcript.py" "<url>" --out "$WORK_DIR/<slug>.txt" \
+     --cookies ~/cookies.txt
+   ```
+   The script warns when a jar carries no login cookies (`SID`, `__Secure-1PSID`, `SAPISID`…): that jar is an anonymous export and cannot pass the wall.
+2. On a machine where the user's browser lives, `--cookies-from-browser chrome` (or `firefox`, `edge`, `brave`) skips the export step.
+3. If cookies are valid and it is *still* walled, add a player client: `--player-client tv --player-client mweb` (`tv`, `web_embedded`, `mweb`, `ios` vary by network).
+4. Some networks need a PO-token provider on top of cookies (`uv pip install bgutil-ytdlp-pot-provider` plus the bgutil HTTP server); see the `youtube-download-access` skill for that recipe.
+5. Last resort, and perfectly acceptable: ask the user to paste or upload the transcript.
 
 ### 2. Plan the lesson
 Group 10–17 chapters into **Parts** (Part I, II, III… with `.part` dividers), from foundations to advanced. Good shape for technical topics:
@@ -119,7 +133,7 @@ Headless Chromium prints the same page with `assets/print.css`: a cover, a Conte
 
 ## Bundled files
 
-- `scripts/fetch_transcript.py`: YouTube → transcript text + metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api.
+- `scripts/fetch_transcript.py`: YouTube → transcript text + metadata. Cycles yt-dlp player clients and subtitle tracks and backs off on HTTP 429; falls back to youtube-transcript-api. Takes `--cookies <jar>`, `--cookies-from-browser <chrome|firefox|…>` and `--player-client <client>` (repeatable, ordered) — env fallbacks `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, `YT_DLP_PLAYER_CLIENT` — and names the reason it failed (bot wall vs nothing available).
 - `scripts/find_photos.py`: Openverse search → contact sheets → picked photos as data URIs with credits.
 - `scripts/assemble.py`: template + body parts → final HTML (derives the accent palette).
 - `scripts/check_page.py`: mobile overflow check + desktop/mobile screenshot slices.
