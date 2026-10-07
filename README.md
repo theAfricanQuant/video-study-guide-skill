@@ -80,6 +80,25 @@ macOS:
 brew install poppler uv
 ```
 
+## Bot walls: cookies for YouTube
+
+`Sign in to confirm you're not a bot` on a cloud/CI box is not a broken install — YouTube treats an anonymous request from a datacenter IP like an expired session. Give the script a jar exported from a browser that is logged in to youtube.com:
+
+```bash
+# 1. export cookies.txt (a "Get cookies.txt LOCALLY"-style extension, while on youtube.com)
+# 2. pass it in
+python3 "<skill>/scripts/fetch_transcript.py" "<url>" --cookies ~/cookies.txt
+
+# or let yt-dlp read a local browser profile directly
+python3 "<skill>/scripts/fetch_transcript.py" "<url>" --cookies-from-browser chrome
+
+# still walled on a locked-down network: try another player client
+python3 "<skill>/scripts/fetch_transcript.py" "<url>" --cookies ~/cookies.txt \
+  --player-client tv --player-client mweb
+```
+
+Env fallbacks for harnesses that cannot pass flags: `YT_DLP_COOKIES`, `YT_DLP_COOKIES_FROM_BROWSER`, `YT_DLP_PLAYER_CLIENT` (comma-separated). The same jar is loaded into the `youtube-transcript-api` fallback's HTTP session. The script warns when a jar contains no login cookies (`SID`, `__Secure-1PSID`, `SAPISID`…) — an anonymous export cannot pass the wall. Where cookies are valid and it still fails, a PO-token provider may be needed: `uv pip install bgutil-ytdlp-pot-provider` plus the bgutil server.
+
 ## What's inside
 
 ```
