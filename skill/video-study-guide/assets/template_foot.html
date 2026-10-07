@@ -1,0 +1,35 @@
+<script>
+(function(){
+  var bar=document.getElementById('progress');
+  var navList=document.querySelector('nav.toc ol');
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var sections=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  var tops=[], current=-1, ticking=false;
+  function measure(){
+    tops=sections.map(function(s){return s?s.getBoundingClientRect().top+window.scrollY:Infinity;});
+  }
+  function update(){
+    ticking=false;
+    var y=window.scrollY, max=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.transform='scaleX('+(max>0?y/max:0)+')';
+    var idx=-1;
+    for(var i=0;i<tops.length;i++){ if(tops[i]-140<=y) idx=i; }
+    if(idx!==current){
+      if(current>=0) links[current].classList.remove('active');
+      current=idx;
+      if(idx>=0){
+        var a=links[idx];
+        a.classList.add('active');
+        // scroll only the chip bar sideways, never the page
+        navList.scrollLeft=a.offsetLeft-(navList.clientWidth-a.offsetWidth)/2;
+      }
+    }
+  }
+  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(update);} },{passive:true});
+  window.addEventListener('resize',function(){measure();update();});
+  window.addEventListener('load',function(){measure();update();});
+  measure(); update();
+})();
+</script>
+</body>
+</html>

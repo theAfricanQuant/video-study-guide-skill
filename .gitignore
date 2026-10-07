@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.test-install/
+lesson-output/
+lesson-work/
+*.pyc
+__pycache__/

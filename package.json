@@ -1,0 +1,30 @@
+{
+  "name": "video-study-guide-skill",
+  "version": "1.0.0",
+  "description": "An agent skill that turns YouTube videos, PDFs, articles and GitHub repos into beautiful, beginner-friendly HTML lessons (and colorful PDFs) with Global South metaphors, licensed photos, original diagrams and tested code.",
+  "keywords": ["agent-skill", "claude", "claude-code", "skills", "education", "study-guide", "lesson", "youtube", "pdf", "duckdb"],
+  "license": "MIT",
+  "bin": {
+    "video-study-guide-skill": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "skill/",
+    "tools/",
+    "requirements.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build:skill": "node tools/build-skill.js",
+    "doctor": "node bin/cli.js doctor",
+    "test": "node bin/cli.js install --dir ./.test-install --force && node bin/cli.js doctor --dir ./.test-install"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theAfricanQuant/video-study-guide-skill.git"
+  }
+}

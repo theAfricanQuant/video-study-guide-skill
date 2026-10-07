@@ -1,0 +1,7 @@
+# Python packages used by skill/video-study-guide/scripts
+yt-dlp
+curl_cffi
+youtube-transcript-api
+pillow
+playwright
+pypdf

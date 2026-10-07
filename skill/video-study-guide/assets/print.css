@@ -1,0 +1,39 @@
+@page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+html, body { background: #F3F5FA !important; }
+* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+#progress, .term .tip { display: none !important; }
+html { scroll-behavior: auto !important; }
+body { font-size: 10.5pt; line-height: 1.55; }
+/* cover */
+header .hero { min-height: 245mm; align-content: center; grid-template-columns: 1fr !important; padding-top: 10mm; }
+header .hero .hero-art { max-width: 120mm; }
+/* contents page */
+nav.toc { position: static !important; background: none !important; border: none !important; break-before: page; break-after: page; padding: 0 !important; }
+nav.toc::before { content: "Contents"; display: block; font-family: var(--display); font-size: 30pt; margin: 6mm 0 6mm; color: var(--ink); }
+nav.toc ol { display: block !important; columns: 2; column-gap: 10mm; overflow: visible !important; padding: 0 !important; max-width: none !important; }
+nav.toc li { break-inside: avoid; margin: 0 0 3mm; }
+nav.toc a { display: block; white-space: normal !important; font-size: 12pt !important; color: var(--ink) !important; border: 1px solid var(--rule) !important; background: var(--sheet); border-radius: 10px !important; padding: 2.5mm 4mm !important; }
+/* layout */
+main { padding: 0 !important; max-width: none !important; }
+.chapter { break-before: page; padding-top: 2mm !important; border-top: none !important; }
+.part { break-before: page; margin-top: 0 !important; }
+.part + .chapter { break-before: avoid; }
+.split { grid-template-columns: 1fr !important; gap: 0 !important; }
+.prose, .story, .analogy, .split > *, details.quiz, .warn, .verify, pre.code, pre.out, .tablewrap, .grid3, figure.diagram { max-width: 100% !important; }
+h2, h3, h4, .chapter-head { break-after: avoid; }
+figure.diagram, .story, .analogy, .card, details.quiz, .warn, .verify, pre.out, tr, .aph, dl.gloss div, ol.playbook > li { break-inside: avoid; }
+pre.code { white-space: pre-wrap !important; word-break: break-word; overflow: visible !important; font-size: 8.6pt !important; break-inside: avoid; }
+pre.out { white-space: pre-wrap !important; word-break: break-word; overflow: visible !important; font-size: 8.4pt !important; }
+.tablewrap { overflow: visible !important; }
+table.cmp { font-size: 9pt; }
+.grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+dl.gloss { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+details.quiz > p { display: block !important; }
+.aph img { max-height: 70mm; }
+a.watch { padding: 2mm 4mm !important; }
+footer { break-before: avoid; }
+.split figure.diagram { max-width: 125mm !important; margin-left: auto !important; margin-right: auto !important; }
+.split figure.diagram svg { max-height: 115mm; }
+figure.diagram svg { max-height: 150mm; }
+.aph img { max-height: 58mm; }
+.aph { max-width: 110mm; }
